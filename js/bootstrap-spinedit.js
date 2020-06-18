@@ -111,7 +111,7 @@
                 value = this.maximum;
             this.value = value;
             this.element.val(this.value.toFixed(this.numberOfDecimals));
-            this.element.change();
+            this.element.trigger("change");
 
             this.element.trigger({
                 type: "valueChanged",
