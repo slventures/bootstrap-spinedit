@@ -5,7 +5,7 @@
         var firstStep = false;
         var clearMousehold = undefined;
         return this.each(function () {
-            $(this).mousedown(function () {
+            $(this).on("mousedown", function () {
                 firstStep = true;
                 var ctr = 0;
                 var t = this;
@@ -22,14 +22,13 @@
                 firstStep = false;
             };
 
-            $(this).mouseout(clearMousehold);
-            $(this).mouseup(clearMousehold);
+            $(this).on("mouseout", clearMousehold);
+            $(this).on("mouseup", clearMousehold);
         });
     }
 };
 
 !function ($) {
-
     var SpinEdit = function (element, options) {
         this.element = $(element);
         this.element.addClass("spinedit");
@@ -52,17 +51,17 @@
         if (hasOptions && typeof options.numberOfDecimals == 'number') {
             this.setNumberOfDecimals(options.numberOfDecimals);
         }        
-		
-		var value = $.fn.spinedit.defaults.value;
+        
+        var value = $.fn.spinedit.defaults.value;
         if (hasOptions && typeof options.value == 'number') {
             value = options.value;
-        } else {			
-			if (this.element.val()) {
-				var initialValue = parseFloat(this.element.val());
-				if (!isNaN(initialValue)) value = initialValue.toFixed(this.numberOfDecimals);				
-			}
-		}		
-        this.setValue(value);		
+        } else {            
+            if (this.element.val()) {
+                var initialValue = parseFloat(this.element.val());
+                if (!isNaN(initialValue)) value = initialValue.toFixed(this.numberOfDecimals);              
+            }
+        }       
+        this.setValue(value);       
 
         this.step = $.fn.spinedit.defaults.step;
         if (hasOptions && typeof options.step == 'number') {
@@ -71,8 +70,8 @@
 
         var template = $(DRPGlobal.template);
         this.element.after(template);
-	$(template).each(function (i,x) {
-            $(x).bind('selectstart click mousedown', function () { return false; });
+    $(template).each(function (i,x) {
+            $(x).on('selectstart click mousedown', function () { return false; });
         });
 
         template.find('.icon-chevron-up').mousehold($.proxy(this.increase, this));
@@ -112,7 +111,7 @@
                 value = this.maximum;
             this.value = value;
             this.element.val(this.value.toFixed(this.numberOfDecimals));
-            this.element.change();
+            this.element.trigger("change");
 
             this.element.trigger({
                 type: "valueChanged",
@@ -159,12 +158,12 @@
         args.shift();
         return this.each(function () {
             var $this = $(this),
-				data = $this.data('spinedit'),
-				options = typeof option == 'object' && option;
+                data = $this.data('spinedit'),
+                options = typeof option == 'object' && option;
 
             if (!data) {
                 $this.data('spinedit', new SpinEdit(this, $.extend({}, $.fn.spinedit().defaults, options)));
-				data = $this.data('spinedit');
+                data = $this.data('spinedit');
             }
             if (typeof option == 'string' && typeof data[option] == 'function') {
                 data[option].apply(data, args);
@@ -185,9 +184,9 @@
     var DRPGlobal = {};
 
     DRPGlobal.template =
-	'<div class="spinedit">' +
-	'<i class="icon-chevron-up"></i>' +
-	'<i class="icon-chevron-down"></i>' +
-	'</div>';
+    '<div class="spinedit">' +
+    '<i class="icon-chevron-up"></i>' +
+    '<i class="icon-chevron-down"></i>' +
+    '</div>';
 
 }(window.jQuery);
